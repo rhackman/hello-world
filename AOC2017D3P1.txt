@@ -1,0 +1,84 @@
+public class MyClass {
+    
+    private static int xCoord = 0;
+    private static int yCoord = 0;
+    private static String direction = "UP";
+        
+    public static void main(String args[]) {
+        
+        getNumSteps(1); // 0
+        getNumSteps(12); // 3
+        getNumSteps(23); // 2
+        getNumSteps(1024); // 31
+        getNumSteps(325489); // ?
+        
+    }
+    
+    private static void getNumSteps(int input) {
+        //System.out.println("Input = " + input);
+        int numSteps = 0;
+        moveToInputLocation(input);
+        xCoord = (xCoord < 0 ? xCoord * -1 : xCoord);
+        yCoord = (yCoord < 0 ? yCoord * -1 : yCoord);
+        numSteps = xCoord + yCoord;
+        System.out.println("Input = " + input + ", NumSteps = " + numSteps + ", X = " + xCoord + ", Y = " + yCoord);
+    }
+    
+    private static void moveToInputLocation(int input) {
+        xCoord = 0;
+        yCoord = 0;
+        
+        int origin = 1;
+        int squareSize = 1;
+        
+        while (origin < input) {
+            //System.out.println("Input = " + input + ", Origin = " + origin + 
+            //", X = " + xCoord + ", Y = " + yCoord + ", SquareSize: " + squareSize + ", Direction: " + direction);
+            
+            int xyLimit = (squareSize - 1)/2;
+            
+            if (origin == squareSize*squareSize) {
+                //System.out.println("New square");
+                squareSize += 2;
+                direction = "RIGHT";
+                keepMoving();
+                direction = "UP";
+            } else if (yCoord == xyLimit && xCoord == xyLimit) {
+                //System.out.println("turn left");
+                direction = "LEFT";
+                keepMoving();
+            } else if (yCoord == xyLimit && xCoord == xyLimit * -1) {
+                //System.out.println("turn down");
+                direction = "DOWN";
+                keepMoving();
+            } else if (yCoord == xyLimit * -1 && xCoord == xyLimit * -1) {
+                //System.out.println("turn right");
+                direction = "RIGHT";
+                keepMoving();
+            } 
+            else {
+                //System.out.println("keep moving");
+                keepMoving();
+            }
+                
+            origin++;
+        }
+    }
+    
+    private static void keepMoving() {
+        switch (direction) {
+            case "UP":
+                yCoord++;
+                break;
+            case "DOWN":
+                yCoord--;
+                break;
+            case "LEFT":
+                xCoord--;
+                break;
+            case "RIGHT":
+                xCoord++;
+                break;
+        }
+    }
+}
