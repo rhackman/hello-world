@@ -1,0 +1,188 @@
+public class MyClass {
+    
+    private int xCoord;
+    private int yCoord;
+    private String direction;
+    private int[][] arr;
+    private int squareSize;
+    private boolean storeValues;
+    private boolean sequential;
+    private int finalAdded;
+        
+    public static void main(String args[]) {
+        MyClass mc = new MyClass();
+        mc.run1();
+    }
+    
+    public MyClass() {
+        xCoord = 0;
+        yCoord = 0;
+        direction = "UP";
+        squareSize = 1;
+        arr = new int[squareSize][squareSize];
+        storeValues = true;
+        sequential = false;
+        finalAdded = 0;
+    }
+    
+    private void run1() {
+        //getNumSteps(1); // 0
+        //getNumSteps(12); // 3
+        //getNumSteps(23); // 2
+        //getNumSteps(1024); // 31
+        getNumSteps(325489); // 552
+        //printArr();
+        System.out.println(finalAdded);
+    }
+    
+    private void printArr() {
+        if (storeValues) {
+         for (int i = 0; i < squareSize; i++) {
+            for (int j = 0; j < squareSize; j++) {
+             System.out.print(arr[j][i] + " ");
+            }
+            System.out.println();
+         }
+         System.out.println();
+        }
+    }
+    
+    private void getNumSteps(int input) {
+        //System.out.println("Input = " + input);
+        int numSteps = 0;
+        moveToInputLocation(input);
+        xCoord = (xCoord < 0 ? xCoord * -1 : xCoord);
+        yCoord = (yCoord < 0 ? yCoord * -1 : yCoord);
+        numSteps = xCoord + yCoord;
+        System.out.println("Input = " + input + ", NumSteps = " + numSteps + ", X = " + xCoord + ", Y = " + yCoord);
+    }
+    
+    private void addNumToArr(int n) {
+        if (storeValues) {
+            int xyLimit = (squareSize - 1)/2;
+            arr[yCoord + xyLimit][xCoord + xyLimit] = n;
+        }
+    }
+    
+    private void addNumToArr() {
+        if (storeValues) {
+            int xyLimit = (squareSize - 1)/2;
+            int y = yCoord + xyLimit;
+            int x = xCoord + xyLimit;
+            int totalAround = 0;
+            
+            for (int i = y-1; i <= y+1; i++) {
+                for (int j = x-1; j <= x+1; j++) {
+                    
+                    if(i < 0 || i >= squareSize || j < 0 || j >= squareSize) {
+                        continue;
+                    }
+                    
+                    totalAround += arr[i][j];
+                }
+             }
+             
+             arr[y][x] = totalAround;
+             finalAdded = totalAround;
+        }
+    }
+    
+    private void increaseSquare() {
+        if (storeValues) {
+        int oldArr[][] = new int[squareSize][squareSize];
+        int oldSquareSize = squareSize;
+        
+        for (int i = 0; i < squareSize; i++) {
+            for (int j = 0; j < squareSize; j++) {
+               oldArr[i][j] = arr[i][j];
+            }
+         }
+         
+         squareSize += 2;
+         
+         arr = new int[squareSize][squareSize];
+         
+         for (int i = 0; i < oldSquareSize; i++) {
+            for (int j = 0; j < oldSquareSize; j++) {
+               arr[i + 1][j + 1] = oldArr[i][j];
+            }
+         }
+        } else {
+            squareSize += 2;
+        }
+    }
+    
+    private void moveToInputLocation(int input) {
+        xCoord = 0;
+        yCoord = 0;
+        squareSize = 1;
+        int origin = 1;
+        
+        addNumToArr(origin);
+        
+        while (origin < input) {
+            if (finalAdded > 325489) {
+                System.out.println("Number reached. Origin at " + origin);
+                break;
+            }
+             
+            
+            //System.out.println("Input = " + input + ", Origin = " + origin + 
+            //", X = " + xCoord + ", Y = " + yCoord + ", SquareSize: " + squareSize + ", Direction: " + direction);
+            
+            int xyLimit = (squareSize - 1)/2;
+            
+            if (origin == squareSize*squareSize) {
+                //System.out.println("New square");
+                increaseSquare();
+                direction = "RIGHT";
+                keepMoving();
+                direction = "UP";
+            } else if (yCoord == xyLimit && xCoord == xyLimit) {
+                //System.out.println("turn left");
+                direction = "LEFT";
+                keepMoving();
+            } else if (yCoord == xyLimit && xCoord == xyLimit * -1) {
+                //System.out.println("turn down");
+                direction = "DOWN";
+                keepMoving();
+            } else if (yCoord == xyLimit * -1 && xCoord == xyLimit * -1) {
+                //System.out.println("turn right");
+                direction = "RIGHT";
+                keepMoving();
+            } 
+            else {
+                //System.out.println("keep moving");
+                keepMoving();
+            }
+            
+            origin++;
+            
+            if (sequential) {
+                addNumToArr(origin);
+            } else {
+                addNumToArr();
+            }
+            
+        }
+        
+        
+    }
+    
+    private void keepMoving() {
+        switch (direction) {
+            case "UP":
+                yCoord++;
+                break;
+            case "DOWN":
+                yCoord--;
+                break;
+            case "LEFT":
+                xCoord--;
+                break;
+            case "RIGHT":
+                xCoord++;
+                break;
+        }
+    }
+}
