@@ -10,7 +10,7 @@ public class MyClass {
         getNumSteps(12); // 3
         getNumSteps(23); // 2
         getNumSteps(1024); // 31
-        getNumSteps(325489); // ?
+        getNumSteps(325489); // 552
         
     }
     
